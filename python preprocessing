@@ -1,0 +1,23 @@
+import numpy as np
+import pandas as pd
+df=pd.read_csv("C:/Users/Aloka/Documents/sem 7/cer/Titanic-Dataset.csv")
+df.head()
+df.describe()
+df.info()
+#here we need to find who are the person travel alone in this sibsp shows who travel with siblings / spouses aboard the Titanic and Parch shows No. of parents / children aboard the Titanic
+df['Travel_Alone']=np.where((df['SibSp']+df['Parch'])>0,0,1).astype('uint8')
+df1=df.drop(['PassengerId','Name','SibSp','Parch','Ticket','Cabin'],axis=1)
+df1.isnull().sum()
+df['Age'].fillna(df1['Age'].median(skipna=True),inplace=True)
+df1.head()
+df_titanic=pd.get_dummies(df1,columns=['Pclass','Sex','Embarked'],drop_first=True)
+df_titanic.head()
+X=df_titanic.drop(['Survived'],axis=1)
+y=df_titanic['Survived']
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+trans_MM=MinMaxScaler()
+trans_SS=StandardScaler()
+df_MM=trans_MM.fit_transform(X)
+pd.DataFrame(df_MM)
+df_SS=trans_SS.fit_transform(X)
+pd.DataFrame(df_SS)
